@@ -1,0 +1,40 @@
+{
+  "title": "ALPHA CBSE",
+  "subtitle": "Developed by GETAPKS",
+  "dialog_background_color": "#252F30",
+  "avatar_url": "https://i.ibb.co/NgbdbJTH/x.jpg",
+  "description": "Modified\n    by @GETAPKS1 — Stay updated with the latest modded apps and games. Join my OFFICIAL TELEGRAM CHANNEL for safe and free downloads. 💯",
+  "icons": {
+    "telegram": {
+      "link": "https://t.me/getapks1"
+    },
+    "instagram": {
+      "link": "https://t.me/getapks1"
+    },
+    "youtube": {
+      "link": "https://t.me/getapks1"
+    }
+  },
+  "buttons": {
+    "cancel_button": {
+      "text": "Dismiss",
+      "color": "#3A4A4B",
+      "text_color": "#FFFFFF",
+      "enabled": false
+    },
+    "update_button": {
+      "text": "UPDATE",
+      "color": "#00BFFF",
+      "text_color": "#FFFFFF",
+      "enabled": false,
+      "link": "https://example.com/update"
+    },
+    "join_telegram_button": {
+      "text": "Join Telegram",
+      "color": "#00BFFF",
+      "text_color": "#FFFFFF",
+      "enabled": true,
+      "link": "https://t.me/getapks1"
+    }
+  }
+}
