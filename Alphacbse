@@ -26,7 +26,7 @@
       "text": "UPDATE",
       "color": "#00BFFF",
       "text_color": "#FFFFFF",
-      "enabled": false,
+      "enabled": true,
       "link": "https://example.com/update"
     },
     "join_telegram_button": {
