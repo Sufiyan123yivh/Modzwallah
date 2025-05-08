@@ -1,0 +1,30 @@
+{
+  "title": "⚡Ads Verification⚡",
+  "message": "❤️‍🔥YOU NEED TO VERIFY YOURSELFBY A SIMPLE VERIFICATION \n ❤️‍🔥THIS VERIFICATIONIS VALID FOR 7 DAYS",
+  "telegramLink": "t.me/getapks1",
+  "whatsappLink": "wa.me/your_number",
+  "youtubeLink": "youtube.com/your_channel",
+  "showUpdate": false,
+  "updateLink": "yourdomain.com/update.apk",
+  "showVerify": false,
+  "showGetPinButton": true,
+  "getPinUrl": "https://go.arlinks.in/wheKH24",
+  "showPinVerifyButton": true,
+  "showPinUI": true,
+  "pinPromptText": "Enter Your 4-Digit Verification Pin",
+  "correctPin": "1235",
+  "serverLinks": {
+    "server1": {
+      "startUrl": "https://go.arlinks.in/wheKH24",
+      "verifyUrl": "Ansari.com"
+    },
+    "server2": {
+      "startUrl": "https://go.arlinks.in/wheKH24",
+      "verifyUrl": "Ansari.com"
+    },
+    "server3": {
+      "startUrl": "https://go.arlinks.in/J0Aw",
+      "verifyUrl": "https://appteka.store/profile/491169"
+    }
+  }
+}
