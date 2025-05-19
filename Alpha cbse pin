@@ -12,7 +12,7 @@
   "showPinVerifyButton": true,
   "showPinUI": true,
   "pinPromptText": "Enter Your 4-Digit Verification Pin",
-  "correctPin": "1235",
+  "correctPin": "9999",
   "serverLinks": {
     "server1": {
       "startUrl": "https://go.arlinks.in/wheKH24",
