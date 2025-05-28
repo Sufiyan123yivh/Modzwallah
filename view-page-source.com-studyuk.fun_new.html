@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Batch Portal</title>
+ <style>
+    /* Base Styles */
+    body {
+        background-color: #121212;
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    /* Main Content Container */
+    #main-content {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Search Bar - Perfectly Centered */
+    .search-container {
+        width: 100%;
+        max-width: 580px;
+        margin: 0 auto 25px;
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 25px;
+        border: none;
+        background-color: #1e1e1e;
+        color: white;
+        font-size: 16px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .search-bar:focus {
+        outline: none;
+        box-shadow: 0 2px 10px rgba(108, 99, 255, 0.3);
+    }
+
+    /* Batch List Container */
+    #batchList {
+        width: 100%;
+        max-width: 580px;
+        margin: 0 auto;
+    }
+
+    /* Common Card Styles */
+    .container, .teacher-container {
+        background-color: #1e1e1e;
+        padding: 25px;
+        border-radius: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+        transform: translateY(-3px);
+    }
+
+    /* Batch Specific Styles */
+    .batch-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #333;
+    }
+
+    .batch-title {
+        font-size: 22px;
+        margin: 10px 0;
+        color: #6c63ff;
+        text-align: center;
+    }
+
+    .separator {
+        height: 1px;
+        background-color: #333;
+        margin: 15px 0;
+    }
+
+    /* Button Styles */
+    .btn {
+        display: block;
+        background-color: #6c63ff;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .btn:hover {
+        background-color: #5a52d6;
+        transform: translateY(-2px);
+    }
+
+    .back-btn {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        display: inline-block;
+        align-self: flex-start;
+    }
+
+    /* Teacher Section */
+    .teacher-container {
+        position: relative;
+    }
+
+    .teacher-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        margin: 0 auto 15px;
+        border: 3px solid #6c63ff;
+    }
+
+    .teacher-name {
+        text-align: center;
+        font-size: 20px;
+        margin: 10px 0;
+    }
+
+    .update-icon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .update-icon:hover {
+        transform: scale(1.1);
+    }
+
+    /* Tabs Section */
+    .section-tabs {
+        display: flex;
+        width: 100%;
+        margin: 0 auto 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #2a2a2a;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 14px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        color: #ffffff;
+        background-color: #2a2a2a; /* Default inactive color */
+    }
+
+    .tab.active {
+        background-color: #6c63ff !important; /* Important to override any JS conflicts */
+        color: white !important;
+    }
+ .tab:hover {
+        background-color: #6C63FE;
+    }
+
+    /* Content Items */
+    .content-section {
+        width: 100%;
+    }
+
+    .content-item {
+        background-color: #1e1e1e;
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .content-item:hover {
+        background-color: #2a2a2a;
+        transform: translateX(5px);
+    }
+
+    .content-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 18px;
+    }
+
+    .content-title {
+        flex: 1;
+        font-size: 15px;
+    }
+
+    /* Update Modal */
+    .update-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .update-frame {
+        width: 90%;
+        max-width: 500px;
+        background-color: #000;
+        border: 2px solid #6c63ff;
+        border-radius: 10px;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .update-animation {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 20px;
+        display: block;
+    }
+
+    .update-text {
+        color: #6c63ff;
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    .terminal {
+        font-family: 'Courier New', monospace;
+        color: #0f0;
+        background-color: #000;
+        padding: 15px;
+        border-radius: 5px;
+        height: 150px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+        text-align: left;
+        border: 1px solid #333;
+    }
+
+    /* Loading States */
+    .loading-spinner {
+        border: 4px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top: 4px solid #6c63ff;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 30px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Error Messages */
+    .error-message {
+        color: #ff6b6b;
+        background-color: rgba(255,0,0,0.1);
+        padding: 12px;
+        border-radius: 5px;
+        margin: 15px 0;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* Security Badge */
+    .security-badge {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        background: #1e1e1e;
+        padding: 6px 12px;
+        border-radius: 3px;
+        font-size: 12px;
+        color: #6c63ff;
+        display: flex;
+        align-items: center;
+    }
+
+    .security-badge::before {
+        content: "🔒";
+        margin-right: 6px;
+    }
+</style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="searchBar" class="search-bar" placeholder="Search batches..." autocomplete="off">
+    </div>
+    
+    <div id="batchList">
+                                    <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Dream Batch 1">
+                    <h2 class="batch-title">Kota NEET UG 2025 Dream Batch 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('3729DMXL')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro 1 (A)">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro 1 (A)</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('G6BN4AVV')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro 1 (B)">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro 1 (B)</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('E17BQVDE')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro 1 (H)">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro 1 (H)</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('ZGWV84NM')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro 3 (A)">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro 3 (A)</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('0KFLQAGZ')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro 3 (K)">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro 3 (K)</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('GL5MX1HD')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro 3 (B)">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro 3 (B)</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('H2WPT2GV')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro 3 (C)">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro 3 (C)</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('DPCD4LI8')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro Plus">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro Plus</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('O0R5EXI1')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Master Pro ELITE">
+                    <h2 class="batch-title">Kota NEET UG 2025 Master Pro ELITE</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('RIG61C7F')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Conquer 1">
+                    <h2 class="batch-title">Kota NEET UG 2025 Conquer 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('WTO19AJW')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Excel 1">
+                    <h2 class="batch-title">Kota NEET UG 2025 Excel 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('IOJNHKYY')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2025 Excel 2">
+                    <h2 class="batch-title">Kota NEET UG 2025 Excel 2</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('93P3YAJS')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2026 Growth 1">
+                    <h2 class="batch-title">Kota NEET UG 2026 Growth 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('REEGPZWR')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2026 Growth APEX">
+                    <h2 class="batch-title">Kota NEET UG 2026 Growth APEX</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('PJOZOVCV')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2026 Growth 2">
+                    <h2 class="batch-title">Kota NEET UG 2026 Growth 2</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('HPT4TC4U')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota NEET UG 2026 Growth 3">
+                    <h2 class="batch-title">Kota NEET UG 2026 Growth 3</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('KVWTGB5F')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Swift NEET UG">
+                    <h2 class="batch-title">Swift NEET UG</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('NXVXWLCQ')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Nayan Batch for IIT JEE 2025">
+                    <h2 class="batch-title">Nayan Batch for IIT JEE 2025</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('MFKM644M')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota IIT JEE 2025 Conquer 4">
+                    <h2 class="batch-title">Kota IIT JEE 2025 Conquer 4</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('JMJRNZ8P')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Raftaar 20 crash course for jee main 2025">
+                    <h2 class="batch-title">Raftaar 20 crash course for jee main 2025</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('GEQBFESO')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota IIT JEE 2025 Conquer 2">
+                    <h2 class="batch-title">Kota IIT JEE 2025 Conquer 2</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('8NJKB4GP')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Evolve batch for jee main and advanced 2025">
+                    <h2 class="batch-title">Evolve batch for jee main and advanced 2025</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('VFIR40NC')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Early Growth Batch for Class 11th JEE Main &amp; Advanced 2025">
+                    <h2 class="batch-title">Early Growth Batch for Class 11th JEE Main &amp; Advanced 2025</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('MDGIKGJ4')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota IIT JEE 2023 Conquer 9">
+                    <h2 class="batch-title">Kota IIT JEE 2023 Conquer 9</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('N3NDWJ23')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="IIT JEE GROWTH BATCH-1">
+                    <h2 class="batch-title">IIT JEE GROWTH BATCH-1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('385U1PZZ')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Jaipur (VN) IIT JEE 2025 Growth 1">
+                    <h2 class="batch-title">Jaipur (VN) IIT JEE 2025 Growth 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('X0619GS4')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="IIT JEE Excel-G1">
+                    <h2 class="batch-title">IIT JEE Excel-G1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('S8N2BUW3')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Jaipur IIT JEE 2025 Growth G1">
+                    <h2 class="batch-title">Jaipur IIT JEE 2025 Growth G1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('LBKQ2L4K')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Indore IIT JEE 2025 Growth 1">
+                    <h2 class="batch-title">Indore IIT JEE 2025 Growth 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('BRLRCKXS')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Janakpuri, Dropper Batch for IIT JEE">
+                    <h2 class="batch-title">Janakpuri, Dropper Batch for IIT JEE</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('CYGDWFM8')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Janakpuri IIT JEE 2025 Growth 1">
+                    <h2 class="batch-title">Janakpuri IIT JEE 2025 Growth 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('OR5QH7FE')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota IIT JEE 2025 Growth 2">
+                    <h2 class="batch-title">Kota IIT JEE 2025 Growth 2</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('5TTA37FK')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Kota IIT JEE 2027 Growth 1">
+                    <h2 class="batch-title">Kota IIT JEE 2027 Growth 1</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('G2NBIP3Y')">ACCESS BATCH</button>
+                </div>
+                            <div class="container">
+                    <img class="batch-image" src="https://iili.io/3T53Yo7.md.jpg" alt="Lucknow HZ NEET UG 2025 Conquer 2">
+                    <h2 class="batch-title">Lucknow HZ NEET UG 2025 Conquer 2</h2>
+                    <div class="separator"></div>
+                    <button class="btn" onclick="loadBatch('PYOK8NW0')">ACCESS BATCH</button>
+                </div>
+                        </div>
+
+    <div class="security-badge">Secure Connection</div>
+
+    <script>
+        // Current state management
+        const appState = {
+            currentBatch: null,
+            currentTeacher: null,
+            currentTab: 'videos'
+        };
+        
+        // DOM elements
+        const elements = {
+            batchList: document.getElementById('batchList'),
+            searchBar: document.getElementById('searchBar')
+        };
+        
+        // Secure API request handler
+        async function secureRequest(action, data = {}) {
+            const request = {
+                action: action,
+                ...data,
+                token: '6002cb75bfba95b7289b3a1c708b68ab08b47979e7119aa484bdffcc93ea8bf2',
+                timestamp: Date.now()
+            };
+            
+            try {
+                const response = await fetch(location.href, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: 'secure_data=' + btoa(JSON.stringify(request))
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const responseData = JSON.parse(atob(await response.text()));
+                
+                if (responseData.error) {
+                    throw new Error(responseData.error);
+                }
+                
+                return responseData;
+                
+            } catch (error) {
+                console.error('Secure request failed:', error);
+                showError(error.message);
+                return { error: error.message };
+            }
+        }
+        
+        // Load batch details
+        async function loadBatch(batchId) {
+            showLoading();
+            
+            const response = await secureRequest('get_batch', { batch_id: batchId });
+            
+            if (response.error) {
+                showError(response.error);
+                return;
+            }
+            
+            appState.currentBatch = response;
+            renderTeachers(response.content);
+        }
+        
+        // Update batch function
+        async function updateBatch(batchId) {
+            const terminal = document.getElementById('updateTerminal');
+            appendTerminalMessage(terminal, 'Initiating secure update...');
+            
+            const response = await secureRequest('update_batch', { batch_id: batchId });
+            
+            if (response.error) {
+                appendTerminalMessage(terminal, `Error: ${response.error}`, 'error');
+            } else {
+                appendTerminalMessage(terminal, 'Update completed successfully!', 'success');
+            }
+            
+            document.getElementById('closeUpdate').style.display = 'block';
+        }
+        
+        // UI rendering functions
+        function showLoading() {
+            elements.batchList.innerHTML = `
+                <div class="container">
+                    <div class="loading-spinner"></div>
+                    <p>Loading content securely...</p>
+                </div>
+            `;
+        }
+        
+        function showError(message) {
+            elements.batchList.innerHTML = `
+                <div class="container">
+                    <p>⚠️ Error loading content</p>
+                    <p class="error-message">${message}</p>
+                    <button class="btn" onclick="location.reload()">Try Again</button>
+                </div>
+            `;
+        }
+        
+        function renderTeachers(teachers) {
+            let html = `
+                <button class="back-btn" onclick="location.reload()">
+                    ← Back to Batches
+                </button>
+            `;
+            
+            teachers.forEach((teacher, index) => {
+                html += `
+                    <div class="teacher-container">
+                        <img class="update-icon" src="gifs/update.gif" 
+                             onclick="showUpdateDialog('${appState.currentBatch.batch_id}')"
+                             alt="Update">
+                        <img class="teacher-avatar" src="${teacher.teacher.avatar}" 
+                             alt="${teacher.teacher.first_name} ${teacher.teacher.last_name}">
+                        <h3 class="teacher-name">${teacher.teacher.first_name} ${teacher.teacher.last_name}</h3>
+                        <div class="separator"></div>
+                        <button class="btn" onclick="renderLectures(${index})">
+                            VIEW LECTURES
+                        </button>
+                    </div>
+                `;
+            });
+            
+            elements.batchList.innerHTML = html;
+            elements.searchBar.style.display = 'none';
+        }
+        
+        function renderLectures(teacherIndex) {
+            const teacher = appState.currentBatch.content[teacherIndex];
+            appState.currentTeacher = teacherIndex;
+            
+            let html = `
+                <button class="back-btn" onclick="renderTeachers(appState.currentBatch.content)">
+                    ← Back to Teachers
+                </button>
+                
+                <div class="section-tabs">
+                    <div class="tab ${appState.currentTab === 'videos' ? 'active' : ''}" 
+                         onclick="switchTab('videos')">
+                        Videos
+                    </div>
+                    <div class="tab ${appState.currentTab === 'notes' ? 'active' : ''}" 
+                         onclick="switchTab('notes')">
+                        Notes
+                    </div>
+                </div>
+                
+                <div class="content-section" id="contentSection"></div>
+            `;
+            
+            elements.batchList.innerHTML = html;
+            renderContent();
+        }
+        
+        function renderContent() {
+            const contentSection = document.getElementById('contentSection');
+            const lectures = appState.currentBatch.content[appState.currentTeacher].videos;
+            
+            if (!lectures || lectures.length === 0) {
+                contentSection.innerHTML = `
+                    <div class="container">
+                        <p>No ${appState.currentTab} available</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let contentHTML = '';
+            
+            lectures.forEach(lecture => {
+                if (appState.currentTab === 'videos' || (appState.currentTab === 'notes' && lecture.pdf_url)) {
+                    const icon = appState.currentTab === 'videos' ? 
+                        'gifs/video_title.gif' : 'gifs/notes_title.gif';
+                    
+                    const clickHandler = appState.currentTab === 'videos' ?
+                        `window.open('https://studyuk.fun/sukp.html?url=${encodeURIComponent(lecture.video_url)}', '_blank')` :
+                        `window.open('${lecture.pdf_url}', '_blank')`;
+                    
+                    contentHTML += `
+                        <div class="content-item" onclick="${clickHandler}">
+                            <img class="content-icon" src="${icon}" 
+                                 alt="${appState.currentTab === 'videos' ? 'Video' : 'Notes'}">
+                            <div class="content-title">
+                                ${lecture.title || 'Untitled Lecture'}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            contentSection.innerHTML = contentHTML || `
+                <div class="container">
+                    <p>No ${appState.currentTab} available</p>
+                </div>
+            `;
+        }
+        
+        function switchTab(tab) {
+            // Update app state
+            appState.currentTab = tab;
+            
+            // Update UI
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.textContent.toLowerCase() === tab) {
+                    t.classList.add('active');
+                }
+            });
+            
+            renderContent();
+        }
+        
+        // Update dialog functions
+        function showUpdateDialog(batchId) {
+            document.body.insertAdjacentHTML('beforeend', `
+                <div class="update-container">
+                    <div class="update-frame">
+                        <img class="update-animation" src="gifs/coding.gif" alt="Updating">
+                        <div class="update-text">Secure Update in Progress</div>
+                        <div class="terminal" id="updateTerminal"></div>
+                        <button class="btn" id="closeUpdate" style="display:none;" 
+                                onclick="closeUpdateDialog()">
+                            COMPLETE
+                        </button>
+                    </div>
+                </div>
+            `);
+            
+            simulateUpdateProcess(batchId);
+        }
+        
+        function closeUpdateDialog() {
+            const dialog = document.querySelector('.update-container');
+            if (dialog) dialog.remove();
+            location.reload();
+        }
+        
+        function simulateUpdateProcess(batchId) {
+            const terminal = document.getElementById('updateTerminal');
+            const messages = [
+                "Initializing secure connection...",
+                "Authenticating credentials...",
+                "Validating batch information...",
+                "Checking for updates...",
+                "Downloading update package (0%)...",
+                "Downloading update package (32%)...",
+                "Downloading update package (67%)...",
+                "Downloading update package (100%)...",
+                "Verifying package integrity...",
+                "Applying updates to content..."
+            ];
+            
+            let counter = 0;
+            const interval = setInterval(() => {
+                if (counter < messages.length) {
+                    appendTerminalMessage(terminal, messages[counter]);
+                    counter++;
+                } else {
+                    clearInterval(interval);
+                    updateBatch(batchId);
+                }
+            }, 1200);
+        }
+        
+        function appendTerminalMessage(terminal, message, type = 'info') {
+            const colors = {
+                info: '#0f0',
+                error: '#f00',
+                success: '#0f0'
+            };
+            terminal.innerHTML += `
+                <div style="color: ${colors[type] || '#0f0'}">> ${message}</div>
+            `;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        // Search functionality
+        elements.searchBar.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('.container').forEach(container => {
+                const title = container.querySelector('.batch-title')?.textContent.toLowerCase() || '';
+                container.style.display = title.includes(term) ? 'block' : 'none';
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Secure Batch Portal initialized');
+        });
+    </script>
+</body>
+</html>
