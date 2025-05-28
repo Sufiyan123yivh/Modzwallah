@@ -578,7 +578,7 @@
                     body: 'secure_data=' + btoa(JSON.stringify(request))
                 });
                 
-                if (!response.ok) {
+                if (!response.error) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
